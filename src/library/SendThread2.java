@@ -1,0 +1,41 @@
+package library;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
+public class SendThread2 {
+
+    ChatWindow2 chatWindow;
+    private String remoteIP = "";
+    private int port = 0;
+    private String message = "";
+
+    public SendThread2(int port,ChatWindow2 window) {
+        chatWindow = window;
+    }
+
+    public void notRun() {
+        InetSocketAddress isa = new InetSocketAddress(remoteIP, port);
+        try {
+            Socket socket = new Socket();
+            socket.connect(isa);
+            OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
+            writer.write(message);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            message = "";
+        }
+    }
+
+    public void senMessage(String host,int port,String message){
+        remoteIP = host;
+        this.port = port;
+        this.message = message;
+        notRun();
+    }
+
+}
